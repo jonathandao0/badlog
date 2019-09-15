@@ -1,6 +1,8 @@
 # badlog
 A data logging system for FRC Robots. Pairs with [badlogvis](https://github.com/dominikWin/badlogvis), a visualization tool.
 
+Slightly modified by me to add a BadLog.stop() function for my own team's needs.
+
 ## Setup
 
 ### Manual
@@ -14,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    compile "com.github.dominikWin:badlog:v0.1.1"
+    compile "com.github.jonathandao0:badlog:v0.1.1"
 }
 ```
 to the build.gradle file.

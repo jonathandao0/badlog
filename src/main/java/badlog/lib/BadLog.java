@@ -30,9 +30,9 @@ public class BadLog {
     private HashMap<String, Optional<String>> publishedData;
     private List<Topic> topics;
 
-    FileOutputStream file;
-    private BufferedWriter fileWriter;
-    private GZIPOutputStream gzFile;
+    static FileOutputStream file;
+    private static BufferedWriter fileWriter;
+    private static GZIPOutputStream gzFile;
 
     private Function<Double, String> doubleStringFunction = (d) -> String.format("%.5g", d);
 
@@ -83,6 +83,21 @@ public class BadLog {
         return init(path, false);
     }
 
+
+    /**
+     * Stops BadLog
+     *
+     */
+    public static void stop() {
+        instance = Optional.empty();
+        try {
+            file.close();
+            fileWriter.close();
+            gzFile.finish();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     /**
