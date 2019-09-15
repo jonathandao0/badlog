@@ -17,7 +17,7 @@ public class Main {
 		log.finishInitialization();
 		ThreadedLog logger = new ThreadedLog();
 		logger.start();
-        
+
 		BadLog.stop();
 		log = BadLog.init("test2.bag");
 		{

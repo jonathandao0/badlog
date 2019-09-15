@@ -70,8 +70,8 @@ public class BadLog {
      * @throws RuntimeException if already initialized
      */
        public static BadLog init(String path, Boolean compress) {
-        if (instance.isPresent())
-            throw new RuntimeException();
+//        if (instance.isPresent())
+////            throw new RuntimeException();
 
         BadLog badLog = new BadLog(path, compress);
         instance = Optional.of(badLog);
@@ -82,14 +82,13 @@ public class BadLog {
     public static BadLog init(String path) {
         return init(path, false);
     }
-
-
+    
     /**
      * Stops BadLog
      *
      */
     public static void stop() {
-        instance = Optional.empty();
+//        instance = Optional.empty();
         try {
             if (file != null)
                 file.close();
