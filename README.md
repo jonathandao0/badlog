@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    compile "com.github.jonathandao0:badlog:v0.1.1"
+    compile "com.github.jonathandao0:badlog:v0.1.2"
 }
 ```
 to the build.gradle file.
