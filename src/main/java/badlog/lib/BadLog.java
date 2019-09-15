@@ -25,7 +25,6 @@ public class BadLog {
     private static Optional<BadLog> instance = Optional.empty();
 
     private boolean registerMode;
-    private static boolean lockWrite;
 
     private List<NamespaceObject> namespace;
     private HashMap<String, Optional<String>> publishedData;
@@ -90,16 +89,17 @@ public class BadLog {
      *
      */
     public static void stop() {
-        lockWrite = true;
         instance = Optional.empty();
         try {
-            file.close();
-            fileWriter.close();
-            gzFile.finish();
+            if (file != null)
+                file.close();
+            if (fileWriter != null)
+                fileWriter.close();
+            if (gzFile != null)
+                gzFile.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        lockWrite = false;
     }
 
 
@@ -258,34 +258,30 @@ public class BadLog {
      * This must be called before each call to log
      */
     public void updateTopics() {
-        if(!lockWrite) {
-            if (registerMode)
-                throw new InvalidModeException();
+        if (registerMode)
+            throw new InvalidModeException();
 
-            topics.stream().filter((o) -> o instanceof QueriedTopic).map((o) -> (QueriedTopic) o)
-                    .forEach(QueriedTopic::refreshValue);
+        topics.stream().filter((o) -> o instanceof QueriedTopic).map((o) -> (QueriedTopic) o)
+                .forEach(QueriedTopic::refreshValue);
 
-            topics.stream().filter((o) -> o instanceof SubscribedTopic).map((o) -> (SubscribedTopic) o)
-                    .forEach((t) -> t.handlePublishedData(publishedData.get(t.getName())));
+        topics.stream().filter((o) -> o instanceof SubscribedTopic).map((o) -> (SubscribedTopic) o)
+                .forEach((t) -> t.handlePublishedData(publishedData.get(t.getName())));
 
-            publishedData.replaceAll((k, v) -> Optional.empty());
-        }
+        publishedData.replaceAll((k, v) -> Optional.empty());
     }
 
     /**
      * Write the values of each topic to the bag file.
      */
     public void log() {
-        if(!lockWrite) {
-            if (registerMode)
-                throw new InvalidModeException();
+        if (registerMode)
+            throw new InvalidModeException();
 
-            StringJoiner joiner = new StringJoiner(",");
-            topics.stream().map(Topic::getValue).map(BadLog::escapeCommas).forEach((v) -> joiner.add(v));
-            String line = joiner.toString();
+        StringJoiner joiner = new StringJoiner(",");
+        topics.stream().map(Topic::getValue).map(BadLog::escapeCommas).forEach((v) -> joiner.add(v));
+        String line = joiner.toString();
 
-            writeLine(line);
-        }
+        writeLine(line);
     }
 
     public void setDoubleToStringFunction(Function<Double, String> function) {
